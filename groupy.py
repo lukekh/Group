@@ -418,3 +418,67 @@ def cycle_to_perm(cycle):
 
 # TODO: HomLike and Hom
 
+class HomLike:
+
+    def __init__(self, name, G, H, homlist):
+        if type(name) != str:
+            raise TypeError('The name of this object should be a string')
+        self.name = name
+        if type(G) != (Group or GroupLike):
+            raise TypeError(f'{G} must be a Group or GroupLike object for a HomLike class')
+        if type(H) != (Group or GroupLike):
+            raise TypeError(f'{G} must be a Group or GroupLike object for a HomLike class')
+        self.domain = G
+        self.range = H
+        self.hom = homlist
+        self._flatdomain = [item[0] for item in homlist]
+        self._flatrange = [item[1] for item in homlist]
+        for tup in homlist:     # I think I actually want this to be part of the Hom class, not HomLike
+            i = 1
+            while tup[0]**i != Gel('e', ()):
+                if tup[0]**i not in self._flatdomain:
+                    self.hom.append((tup[0]**i, tup[1]**i))
+                    self._flatdomain.append(tup[0]**i)
+                i += 1
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f"{self.name}: {self.domain.name} -> {self.range.name}"
+
+    def __getitem__(self, item):
+        try:
+            return self._flatrange[self._flatdomain.index(item)]
+        except:
+            raise Exception('This does not appear in the domain of your function')
+
+    def _hasdomainG(self):
+        p = True
+        for g in self.domain:
+            p = p & (g in self._flatdomain)
+        return p
+
+
+def constructGroup(groupname):
+    # Allows user to input a groupname string and returns some of the more well known groups
+    if groupname.lower().replace('_', '') in ['z2', 'c2', 's2']:
+        return Group(groupname, [Gel('e', ()), Gel('(1 2)', (2,1))])
+
+    if groupname.lower().replace('_', '') in ['z3', 'c3']:
+        return Group(groupname, [Gel('e', ()), Gel('(1 2 3)', (2,3,1)), Gel('(1 3 2)', (3,1,2))])
+
+    if groupname.lower().replace('_', '') in ['z4', 'c4']:
+        return Group(groupname, [
+            Gel('e', ()), Gel('(1 2 3 4)', (2, 3, 4, 1)), Gel('(1 3)(2 4)', (3, 4, 1, 2)),
+            Gel('(1 4 3 2)', (4, 1, 2, 3))
+        ])
+
+    if groupname.lower().replace(' ', '').replace('_', '') in ['v4', 'v_4', 'kleinfour', 'klein4', 'kleingroup',
+                                                               'klein', 'z2*z2', 'z2**2']:
+        return Group(groupname, [
+            Gel('e', ()), Gel('(1 2)', (2,1)), Gel('(3 4)', (1,2,4,3)), Gel('(1 2)(3 4)', (2,1,4,3))
+        ])
+
+
+
