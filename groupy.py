@@ -112,7 +112,7 @@ class Gel:
 
 
 
-# Institute what a group object is
+# Institute what a groupy object is
 
 
 class GroupLike:
@@ -123,7 +123,7 @@ class GroupLike:
                 raise Exception('A GroupLike type can only contain Gel type elements.')
         self.elements = elements
         if type(name) != str:
-            raise Exception('The name of a group must be a string, ya idiot.')
+            raise Exception('The name of a groupy must be a string, ya idiot.')
         self.name = name
         self._gelnamedict = {}
         self._gelpermdict = {}
@@ -262,7 +262,7 @@ class GroupLike:
                 p = p & (g*h == h*g)
         return p
 
-    # TODO: Find centre of group
+    # TODO: Find centre of groupy
 
 
 class Group(GroupLike):
@@ -275,7 +275,7 @@ class Group(GroupLike):
             self.elements = elements
         else:
             if not force_group:
-                raise Exception('The elements of this set do not form a group.')
+                raise Exception('The elements of this set do not form a groupy.')
             self.elements = __G.closure().elements
         self._gelnamedict = {}
         self._gelpermdict = {}
@@ -359,11 +359,11 @@ def mat_to_group(name, columns, matrix):
         try:
             elements.append(Gel(columns[i], _row_to_element(d, row)))
         except Exception:
-            raise Exception('One of the rows in the matrix input does not describe valid group multiplication')
+            raise Exception('One of the rows in the matrix input does not describe valid groupy multiplication')
     try:
         return Group(name, elements, force_group=False)
     except Exception:
-        raise Exception('The matrix does not describe a group. Try mat_to_GroupLike.')
+        raise Exception('The matrix does not describe a groupy. Try mat_to_GroupLike.')
 
 
 def group_to_mat(G, use_name=False):
