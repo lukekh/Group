@@ -75,7 +75,7 @@ class Gel:
         if n == 1:
             return self
         if n == 0:
-            return Gel('e', (self*self.inv()).perm)
+            return Gel('e', ())
         if n < 0:
             return Gel(self.name + '**{}'.format(n), (self.inv()*self.inv().__pow__(-n)).perm)
         else:
@@ -171,10 +171,7 @@ class GroupLike:
         return not self == other
 
     def _hase(self):
-        if Gel('e', ()) in self:
-            return True
-        else:
-            return False
+        return Gel('e', ()) in self
 
     def _isclosed(self):
         p = True
@@ -262,7 +259,7 @@ class GroupLike:
                 p = p & (g*h == h*g)
         return p
 
-    # TODO: Find centre of groupy
+    # TODO: Find centre of group
 
 
 class Group(GroupLike):
@@ -271,7 +268,7 @@ class Group(GroupLike):
         super().__init__(name, elements)
         __G = GroupLike(name, elements)
         self.name = name
-        if __G.isGroup():  # TODO: Check if element appears more than once
+        if __G.isGroup():
             self.elements = elements
         else:
             if not force_group:
@@ -305,6 +302,24 @@ class Group(GroupLike):
 
     def __eq__(self, other):
         return (self < other) & (self > other)
+
+    def __rmul__(self, other):
+        if type(other) == Gel:
+            return self._lcoset(other)
+        elif type(other) == Group:
+            return other._groupprod(self)
+
+    def __mul__(self, other):
+        if type(other) == Gel:
+            return self._rcoset(other)
+        elif type(other) == Group:
+            return self._groupprod(other)
+
+    def _groupprod(self, other):
+        Gperms = [g.perm for g in self]
+        Gmax = max([max(t) if len(t) > 1 else 0 for t in Gperms])
+        Hels = [Gel(f"{h.name}'", tuple(list(range(1, Gmax+1))+[i+Gmax for i in h.perm])) for h in other]
+        return Group(f"{self.name}x{other.name}", self.elements+Hels)
 
     def hasNormal(self, other):
         if type(other) == Group:
@@ -461,24 +476,43 @@ class HomLike:
 
 
 def constructGroup(groupname):
+
+    # This function cleans up symbols people might use
+    def _namestd(s):
+        return s.lower().replace('_', '').replace('-', '').replace(' ', '')
+
+    # Some regex strings for matching
+    rcycle = r'^[cz]\d+$'  # regex for cycles
+    rklein = r'(v4)|(^(klein)(4|four)?(group)?$)|(^z2(\*\*|\^)2$)' # regex for klein group
+    rquaternions = r'(^(quaternion)(s)?(group)?$)|(^h$)'
+
     # Allows user to input a groupname string and returns some of the more well known groups
-    if groupname.lower().replace('_', '') in ['z2', 'c2', 's2']:
-        return Group(groupname, [Gel('e', ()), Gel('(1 2)', (2,1))])
+    if re.match(rcycle, _namestd(groupname)):
+        n = int(re.findall(r'\d+', _namestd(groupname))[0])
+        if n > 200:
+            raise Exception('Are you trying to break your computer?')
+        g = Gel('g', tuple(list(range(2, n+1))+[1]))
+        glist = []
+        for i in range(n):
+            glist.append(Gel((g**i).cycle(), (g**i).perm))
+        return Group(groupname, glist, force_group=False)
 
-    if groupname.lower().replace('_', '') in ['z3', 'c3']:
-        return Group(groupname, [Gel('e', ()), Gel('(1 2 3)', (2,3,1)), Gel('(1 3 2)', (3,1,2))])
-
-    if groupname.lower().replace('_', '') in ['z4', 'c4']:
+    if re.match(rklein, _namestd(groupname)):
         return Group(groupname, [
-            Gel('e', ()), Gel('(1 2 3 4)', (2, 3, 4, 1)), Gel('(1 3)(2 4)', (3, 4, 1, 2)),
-            Gel('(1 4 3 2)', (4, 1, 2, 3))
+            Gel('e', ()), Gel('(1 2)', (2, 1)), Gel('(3 4)', (1, 2, 4, 3)), Gel('(1 2)(3 4)', (2, 1, 4, 3))
         ])
 
-    if groupname.lower().replace(' ', '').replace('_', '') in ['v4', 'v_4', 'kleinfour', 'klein4', 'kleingroup',
-                                                               'klein', 'z2*z2', 'z2**2']:
-        return Group(groupname, [
-            Gel('e', ()), Gel('(1 2)', (2,1)), Gel('(3 4)', (1,2,4,3)), Gel('(1 2)(3 4)', (2,1,4,3))
-        ])
+    if re.match(rquaternions, _namestd(groupname)):
+        return mat_to_group(groupname, ['1', '-1', 'i', '-i', 'j', '-j', 'k', '-k'],
+                            [['1', '-1', 'i', '-i', 'j', '-j', 'k', '-k'],
+                             ['-1', '1', '-i', 'i', '-j', 'j', '-k', 'k'],
+                             ['i', '-i', '-1', '1', 'k', '-k', '-j', 'j'],
+                             ['-i', 'i', '1', '-1', '-k', 'k', 'j', '-j'],
+                             ['j', '-j', '-k', 'k', '-1', '1', 'i', '-i'],
+                             ['-j', 'j', 'k', '-k', '1', '-1', '-i', 'i'],
+                             ['k', '-k', 'j', '-j', '-i', 'i', '-1', '1'],
+                             ['-k', 'k', '-j', 'j', 'i', '-i', '1', '-1']]
+                            )
 
 
 
