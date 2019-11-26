@@ -5,7 +5,7 @@ groupy theory and abstract algebraic objects.
 
 __author__ = "Luke Keating Hughes"
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 __email__ = "groupython@gmail.com"
 
