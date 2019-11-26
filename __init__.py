@@ -7,6 +7,5 @@ __author__ = "Luke Keating Hughes"
 
 __version__ = "0.0.1"
 
-
 __email__ = "groupython@gmail.com"
 

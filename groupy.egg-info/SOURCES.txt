@@ -1,7 +1,5 @@
 README.md
 setup.py
-groupy/__init__.py
-groupy/groupy.py
 groupy.egg-info/PKG-INFO
 groupy.egg-info/SOURCES.txt
 groupy.egg-info/dependency_links.txt

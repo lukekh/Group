@@ -1,14 +1,14 @@
 import setuptools
-import groupy
+import __init__
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="groupy",
-    version=groupy.__version__,
-    author=groupy.__author__,
-    author_email="",
+    version=__init__.__version__,
+    author=__init__.__author__,
+    author_email="groupython@gmail.com",
     description="A python package that will allow you to sandbox groups",
     long_description=long_description,
     long_description_content_type="text/markdown",

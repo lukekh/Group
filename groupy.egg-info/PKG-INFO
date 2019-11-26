@@ -4,7 +4,7 @@ Version: 0.0.1
 Summary: A python package that will allow you to sandbox groups
 Home-page: https://github.com/lukekh/groupy
 Author: Luke Keating Hughes
-Author-email: 
+Author-email: groupython@gmail.com
 License: UNKNOWN
 Description: # Groupy
         A python script (and aspirational library) that allows you make and perform computations with finite groups. I have tried to craft a back end that is flexible and robust enough for users to construct group elements, groups and be a sandbox that allows users to mess around with these objects with python taking care of the computation.
