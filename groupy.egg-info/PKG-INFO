@@ -1,9 +1,9 @@
 Metadata-Version: 2.1
 Name: groupy
-Version: 0.0.2
-Summary: A python package that will allow you to sandbox groups
+Version: 0.0.3
+Summary: A python package that will allow you to create a sandbox for groups
 Home-page: https://github.com/lukekh/groupy
-Author: Luke Keating Hughes
+Author: lukekh
 Author-email: groupython@gmail.com
 License: UNKNOWN
 Description: # Groupy
