@@ -4,7 +4,25 @@ import re
 
 
 class Gel:
+    """
+    A group element.
 
+    The Gel object consists of a name and a permutation. The permutation is some bijection from the set of numbers from
+    1 to n onto itself in the form of a tuple. Since any group element of a finite group can be thought of a member of
+    the symmetric group, every group element can be realised as one of these tuples.
+
+    Parameters
+    ----------
+    name : str,
+        The moniker of the group element.
+    perm : tuple,
+        The mathematical definition of the group element. If it is of length n, it must contain the numbers 1 to n.
+
+    Examples
+    --------
+    >>> g = Gel('g', (2,1,4,3))
+    >>> identity = Gel('e', ())
+    """
     def __init__(self, name, perm):
         if (type(name) == str) & (type(perm) == tuple):
             self.name = name
@@ -28,6 +46,16 @@ class Gel:
         return hash(self.perm)
 
     def __eq__(self, other):
+        """
+        Boolean equality
+
+        A bijection from 1 to n can be thought of as a bijection from the natural numbers onto itself where m -> m
+        for any m > n. In this way, this equality robustly allows us to compare group elements even if they do not
+        strictly have the same tuple.
+
+        :param other: another Gel object
+        :return: True/False
+        """
         if type(other) == Gel:
             p = True
             for i in range(max(len(self.perm), len(other.perm))):
@@ -43,30 +71,36 @@ class Gel:
             return True
 
     def _gcycle(self, n):
+        # Find the image of the number n under the group element self
         if n in self.perm:
             return self.perm[n-1]
         else:
             return n
 
     def _gmul(self, other):
+        # Group multiplication between the permutations of self*other
         r = []
         for i in range(max(len(self.perm), len(other.perm))):
             r.append(self._gcycle(other._gcycle(i+1)))
         return tuple(r)
 
     def __mul__(self, other):
+        # Create group object (element/coset/etc) through multiplication
         if type(other) == Gel:
             return Gel(self.name+other.name, self._gmul(other))
         else:
             return other.__rmul__(self)
 
     def inv(self):
+        # Calculate the inverse of a group element
         r = []
         for i, _ in enumerate(self.perm):
             r.append(self.perm.index(i+1)+1)
         if len(re.sub(r'[^a-zA-Z]', '', self.name)) == 1:
+            # Adds inverse symbol to the end of string
             return Gel(self.name + u"\u207B\u00B9", tuple(r))
         else:
+            # Puts complex name in brackets first to avoid confusion
             return Gel("(" + self.name + u")\u207B\u00B9", tuple(r))
 
     def __pow__(self, n):
@@ -82,6 +116,7 @@ class Gel:
             return Gel(self.name + '**{}'.format(n), (self*self.__pow__(n-1)).perm)
 
     def cycle(self):
+        # Prints cycle notation of group element
         s = "(1 "
         b = [1]
         i = 1
@@ -102,23 +137,38 @@ class Gel:
             return s
 
     def order(self):
+        # Calculates order of group element
         i = 1
         while self**i != Gel('e', ()):
             i += 1
         return i
 
 
-# A GroupLike object will have basic functionality of a set with binary operation, but not need to meet the axioms of a
-# group.
 class GroupLike:
+    """
+    A class that resembles a group but need not meet all of the group axioms.
 
+    A GroupLike class consists of a name and a list of group elements. The elements of a GroupLike need not abide by
+    the axioms of a Group and can be used as a set of group elements (e.g. a coset).
+
+    Parameters
+    -----------
+    name : str,
+        The name of your GroupLike object.
+    elements: list,
+        List of group elements.
+
+    Examples
+    --------
+    >>> G = GroupLike('V_4', [Gel('e', () ), Gel('V', (2,1) ), Gel('H', (1,2,4,3) ), Gel('R', (2,1,4,3) )])
+    """
     def __init__(self, name, elements):
         for g in elements:
             if type(g) != Gel:
                 raise Exception('A GroupLike type can only contain Gel type elements.')
         self.elements = elements
         if type(name) != str:
-            raise Exception('The name of a groupy must be a string, ya idiot.')
+            raise Exception('The name of a GroupLike must be a string, ya idiot.')
         self.name = name
         self._gelnamedict = {}
         self._gelpermdict = {}
@@ -164,6 +214,12 @@ class GroupLike:
 
     def __ne__(self, other):
         return not self == other
+
+    def append(self, g):
+        if type(g) == Gel:
+            self.elements.append(g)
+        else:
+            raise Exception(f"You may only append Gel class elements to a {type(self)} class.")
 
     def _hase(self):
         return Gel('e', ()) in self
@@ -510,4 +566,5 @@ def constructGroup(groupname):
                             )
 
 
-
+if __name__ == "__main__":
+    pass
