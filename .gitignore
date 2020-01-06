@@ -1,3 +1,4 @@
+# Folders to ignore
 .git/
 .idea/
 __pycache__/
@@ -5,3 +6,5 @@ build/
 dist/
 groupy.egg-info/
 venv/
+
+# Files to ignore
