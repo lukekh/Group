@@ -8,7 +8,9 @@ This has started as a personal passion project, but I would be interested in see
 
 ### Using pip
 The package is hosted on test.pypi. To install the groupy package using pip use
+
 ```pip install --index-url https://test.pypi.org/simple/ --no-deps groupy```
+
 using your python interpreted or choice with version >= 3
 
 
