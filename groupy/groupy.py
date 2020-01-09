@@ -16,7 +16,8 @@ class Gel:
     name : str,
         The moniker of the group element.
     perm : tuple,
-        The mathematical definition of the group element. If it is of length n, it must contain the numbers 1 to n.
+        if tuple : The mathematical definition of the group element. If it is of length n, it must contain the numbers
+                   1 to n.
 
     Examples
     --------
@@ -143,6 +144,12 @@ class Gel:
             i += 1
         return i
 
+    def is_identity(self):
+        p = True
+        for i in range(len(self.perm)):
+            p = p & (self._gcycle(i) == i)
+        return p
+
 
 class GroupLike:
     """
@@ -155,7 +162,7 @@ class GroupLike:
     -----------
     name : str,
         The name of your GroupLike object.
-    elements: list,
+    elements : list,
         List of group elements.
 
     Examples
@@ -218,6 +225,8 @@ class GroupLike:
     def append(self, g):
         if type(g) == Gel:
             self.elements.append(g)
+            self._gelpermdict[g.perm] = g
+            self._gelnamedict[g.name] = g
         else:
             raise Exception(f"You may only append Gel class elements to a {type(self)} class.")
 
@@ -314,7 +323,30 @@ class GroupLike:
 
 
 class Group(GroupLike):
+    """
+    A class that resembles a mathematical group.
 
+    A Group class consists of a name list of group elements. The elements of a Group needs to abide by the axioms of a
+    Group and will force the closure of the group if force_group is True (which is the default). The main structure is
+    inherited from GroupLike but certain methods have been added/altered.
+
+    Parameters
+    -----------
+    name : str,
+        The name of your Group object.
+    elements : list,
+        List of group elements.
+    force_group : bool, default=True,
+        Boolean representing whether or not the group should be automatically completed so that it abides by the group
+        axioms. True will construct the closure of the list of elements, false will allow the user to attempt to submit
+        a group and raise an exception if it does not meet the axioms of a group.
+
+    Examples
+    --------
+    >>> G = Group('V_4', [Gel('e', () ), Gel('V', (2,1) ), Gel('H', (1,2,4,3) )])
+    >>> G
+    G = {e, V, H, VH}
+    """
     def __init__(self, name, elements, force_group=True):
         super().__init__(name, elements)
         __G = GroupLike(name, elements)

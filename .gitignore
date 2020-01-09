@@ -8,3 +8,6 @@ groupy.egg-info/
 venv/
 
 # Files to ignore
+Rubik/data_generator.py
+Rubik/train_heuristic.py
+Rubik/data.*
