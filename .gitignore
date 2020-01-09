@@ -11,3 +11,4 @@ venv/
 Rubik/data_generator.py
 Rubik/train_heuristic.py
 Rubik/data.*
+Rubik/*.pickle

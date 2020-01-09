@@ -167,10 +167,16 @@ def construct_rubiks_group():
 #
 if __name__ == "__main__":
 
+    import pickle
+    from sklearn.neural_network import MLPRegressor
+
     R = construct_rubiks_group()
+
+    M = pickle.load(open("R_heuristic.sav", 'rb'))
 
     Rc = Cube()
     while 1 == 1:
         user_input = input()
         Rc*R[user_input]
         Rc.plot()
+        print(M.predict([Rc.state]))
