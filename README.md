@@ -5,6 +5,14 @@ This has started as a personal passion project, but I would be interested in see
 
 
 ## Getting Started
+
+### Using pip
+The package is hosted on test.pypi. To install the groupy package using pip use
+```pip install --index-url https://test.pypi.org/simple/ --no-deps groupy```
+using your python interpreted or choice with version >= 3
+
+
+### Using clone
 To get started you currently just need to copy the script onto your local machine via clone. Once cloned, use
 ``` from groupy import * ```
 to import the logic for different objects I have created.
