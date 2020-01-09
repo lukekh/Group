@@ -11,21 +11,25 @@ The package is hosted on test.pypi. To install the groupy package using pip use
 
 ```pip install --index-url https://test.pypi.org/simple/ --no-deps groupy```
 
-using your python interpreted or choice with version >= 3
+using your python interpreted or choice with version >= 3.
+
+You should now be able to use ```import groupy as gp``` and use the Gel, GroupLike and Group classes, along with the supplementary functions I have created.
 
 
 ### Using clone
 To get started you currently just need to copy the script onto your local machine via clone. Once cloned, use
-``` from groupy import * ```
+
+``` from groupy import groupy as gp ```
+
 to import the logic for different objects I have created.
 
 
 ## First time user
-For first time users I recommend using the ```constructGroup()``` function to start with some basic groups, maybe the Klein four-group by typing ```V4 = constructGroup('Klein Group')```. You can now call the elements of this group by either using ```V4[i]``` for some integer i or using the group elements name as a string (e.g. ```V4['(1 2)']```).
+For first time users I recommend using the ```gp.constructGroup()``` function to start with some basic groups, maybe the Klein four-group by typing ```V4 = gp.constructGroup('Klein Group')```. You can now call the elements of this group by either using ```V4[i]``` for some integer i or using the group elements name as a string (e.g. ```V4['(1 2)']```).
 
 
 ## How does it work
-One you've played around with that, it's worth understanding the back end to this code which runs it all. This whole project is founded on Cayley's theorem: every group G is isomorphic to a subgroup of the symmetric group acting on G. Fundamentally, we can think of every finite group as a subset of the symmetric group. A group element, or 'Gel' for short is thus a symbollic element (e.g. 'g') which has some analogue to a cycle from the symmetric group. Thus we input ```g = Gel('g', <tuple>)``` to represent this group element.
+One you've played around with that, it's worth understanding the back end to this code which runs it all. This whole project is founded on Cayley's theorem: every group G is isomorphic to a subgroup of the symmetric group acting on G. Fundamentally, we can think of every finite group as a subset of the symmetric group. A group element, or 'Gel' for short is thus a symbollic element (e.g. 'g') which has some analogue to a cycle from the symmetric group. Thus we input ```g = gp.Gel('g', <tuple>)``` to represent this group element.
 
 Ok, but what is this magical tuple? Well, if you only care about groups, then you may never have to worry about that (or at least in some future state of this library). The representation of this element will just be the string you have chosen to name it by and multiplying it with other elements will cause those strings to concatenate with other group elements to form 'words' from your group.
 
@@ -36,7 +40,7 @@ But I really want to know what this magical tuple is! Ok, great! I love your ent
   2) If I write down the Cayley table for my group, I can number each element of my group.
   For example, if I order my group \[0, 120, 240\], I'll end up with the Cayley table \[\[0,120,240\],\[120,240,0\],\[240,0,120\]\]. We can think of the i^{th} row as representing what the i^{th} group element does to reshuffle the group under multiplication and hence the tuple we would enter for rotation by 120 degrees would be (2,3,1).
   
-This may be somewhat mistifying but the advantages are that it is easy for the user to define what the binary operation of the group is without having to express it with formulae. In fact, to define a group you can simply input the Cayley table for your group using the ```mat_to_group()``` function.
+This may be somewhat mistifying but the advantages are that it is easy for the user to define what the binary operation of the group is without having to express it with formulae. In fact, to define a group you can simply input the Cayley table for your group using the ```gp.mat_to_group()``` function.
 
 ## Authors
 Luke Keating Hughes
