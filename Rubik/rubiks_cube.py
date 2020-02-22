@@ -19,7 +19,6 @@ class Cube:
                                     ]
         self.fig = None
         self.ax = None
-        plt.ion()
 
     def _colour(self, i):
         return self.default_face_colors[int(i/8)]
@@ -73,6 +72,8 @@ class Cube:
         if self.fig is not None:
             plt.clf()
             plt.close(self.fig)
+        else:
+            plt.ion()
 
         bounds = [-1.5, -0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
         self.fig, self.ax = plt.subplots()
@@ -88,6 +89,7 @@ class Cube:
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
         plt.clf()
+
 
 def construct_rubiks_group():
     R_dict = {
@@ -172,9 +174,10 @@ if __name__ == "__main__":
 
     R = construct_rubiks_group()
 
-    M = pickle.load(open("R_heuristic.sav", 'rb'))
+    M = pickle.load(open("Rubik_scramble_heuristic.sav", 'rb'))
 
     Rc = Cube()
+    #Rc.state = (1, 2, 6, 7, 13, 35, 26, 48, 9, 18, 30, 15, 28, 22, 34, 25, 24, 5, 3, 21, 37, 19, 42, 43, 27, 20, 11, 31, 4, 40, 12, 14, 8, 39, 32, 23, 44, 33, 45, 41, 16, 29, 38, 36, 10, 46, 47, 17)
     while 1 == 1:
         user_input = input()
         Rc*R[user_input]

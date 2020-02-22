@@ -72,6 +72,9 @@ class Scramble:
                     del st[i:i + j]
                     if j % 4 == 3:
                         st.insert(i, _inv(move))
+                    if j % 4 == 2:
+                        st.insert(i, move)
+                        st.insert(i, move)
                     elif j % 4 == 1:
                         st.insert(i, move)
             return st
