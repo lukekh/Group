@@ -6,6 +6,7 @@ build/
 dist/
 groupy.egg-info/
 venv/
+*.ipynb_checkpoints/
 
 # Files to ignore
 Rubik/data_generator.py
