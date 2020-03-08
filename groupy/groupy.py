@@ -29,6 +29,9 @@ class Gel:
         def valid_tuple(tup):
             """Checks the tuple adheres to the Gel standard"""
             return set(tup) == set(range(1, len(tup)+1))
+
+        self.g = g
+
         if valid_tuple(perm):
             self.perm = perm
         else:
