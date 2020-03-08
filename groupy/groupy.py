@@ -13,9 +13,9 @@ class Gel:
 
     Parameters
     ----------
-    name : str,
-        The moniker of the group element.
-    perm : tuple,
+    :type g: object,
+        The object you wish to assign a group meaning to.
+    :type perm: tuple,
         if tuple : The mathematical definition of the group element. If it is of length n, it must contain the numbers
                    1 to n.
 
@@ -24,27 +24,24 @@ class Gel:
     >>> g = Gel('g', (2,1,4,3))
     >>> identity = Gel('e', ())
     """
-    def __init__(self, name, perm):
-        if (type(name) == str) & (type(perm) == tuple):
-            self.name = name
-            p = True
-            for i, _ in enumerate(perm):
-                p = p & (i+1 in perm)
-            if p:
-                self.perm = perm
-            else:
-                raise Exception("Bad permutation. A permutation tuple of length n must contain all numbers from 1 to n")
+    def __init__(self, g, perm):
+
+        def valid_tuple(tup):
+            """Checks the tuple adheres to the Gel standard"""
+            return set(tup) == set(range(1, len(tup)+1))
+        if valid_tuple(perm):
+            self.perm = perm
         else:
-            raise Exception("Invalid inputs for Gel class")
+            raise Exception("Bad permutation. A permutation tuple of length n must contain all numbers from 1 to n")
 
     def __str__(self):
-        return self.name
+        return str(self.g)
 
     def __repr__(self):
         return self.__str__()
 
     def __hash__(self):
-        return hash(self.perm)
+        return hash(self.g)
 
     def __eq__(self, other):
         """
@@ -60,7 +57,7 @@ class Gel:
         if type(other) == Gel:
             p = True
             for i in range(max(len(self.perm), len(other.perm))):
-                p = p & (self._gcycle(i+1) == other._gcycle(i+1))
+                p = p & (self.gcycle(i + 1) == other.gcycle(i + 1))
             return p
         else:
             return False
@@ -71,24 +68,24 @@ class Gel:
         else:
             return True
 
-    def _gcycle(self, n):
+    def gcycle(self, n):
         # Find the image of the number n under the group element self
         if n in self.perm:
             return self.perm[n-1]
         else:
             return n
 
-    def _gmul(self, other):
+    def gmul(self, other):
         # Group multiplication between the permutations of self*other
         r = []
         for i in range(max(len(self.perm), len(other.perm))):
-            r.append(self._gcycle(other._gcycle(i+1)))
+            r.append(self.gcycle(other.gcycle(i + 1)))
         return tuple(r)
 
     def __mul__(self, other):
         # Create group object (element/coset/etc) through multiplication
         if type(other) == Gel:
-            return Gel(self.name+other.name, self._gmul(other))
+            return Gel(str(self) + str(other), self.gmul(other))
         else:
             return other.__rmul__(self)
 
@@ -97,12 +94,12 @@ class Gel:
         r = []
         for i, _ in enumerate(self.perm):
             r.append(self.perm.index(i+1)+1)
-        if len(re.sub(r'[^a-zA-Z]', '', self.name)) == 1:
+        if len(re.sub(r'[^a-zA-Z]', '', str(self))) == 1:
             # Adds inverse symbol to the end of string
-            return Gel(self.name + u"\u207B\u00B9", tuple(r))
+            return Gel(str(self) + u"\u207B\u00B9", tuple(r))
         else:
             # Puts complex name in brackets first to avoid confusion
-            return Gel("(" + self.name + u")\u207B\u00B9", tuple(r))
+            return Gel("(" + str(self) + u")\u207B\u00B9", tuple(r))
 
     def __pow__(self, n):
         if type(n) != int:
@@ -112,9 +109,9 @@ class Gel:
         if n == 0:
             return Gel('e', ())
         if n < 0:
-            return Gel(self.name + '**{}'.format(n), (self.inv()*self.inv().__pow__(-n)).perm)
+            return Gel(f'{self}**{n}', (self.inv()*self.inv().__pow__(-n)).perm)
         else:
-            return Gel(self.name + '**{}'.format(n), (self*self.__pow__(n-1)).perm)
+            return Gel(f'{self}**{n}', (self*self.__pow__(n-1)).perm)
 
     def cycle(self):
         # Prints cycle notation of group element
@@ -122,7 +119,7 @@ class Gel:
         b = [1]
         i = 1
         while len(b) < len(self.perm):
-            i = self._gcycle(i)
+            i = self.gcycle(i)
             if i not in b:
                 s = s + "{} ".format(i)
                 b.append(i)
@@ -147,7 +144,7 @@ class Gel:
     def is_identity(self):
         p = True
         for i in range(len(self.perm)):
-            p = p & (self._gcycle(i) == i)
+            p = p & (self.gcycle(i) == i)
         return p
 
 
